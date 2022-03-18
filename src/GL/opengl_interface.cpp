@@ -57,13 +57,13 @@ void reshape_window(int w, int h)
 void display(void)
 {
     // sort the displayables by their z-coordinate
-    std::sort(display_queue.begin(), display_queue.end(), disp_z_cmp {});
+    std::sort(Displayable::display_queue.begin(), Displayable::display_queue.end(), disp_z_cmp {});
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(-zoom, zoom, -zoom, zoom, 0.0f, 1.0f); // left, right, bottom, top, near, far
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_TEXTURE_2D);
-    for (const auto& item : display_queue)
+    for (const auto& item : Displayable::display_queue)
     {
         item->display();
     }
@@ -71,14 +71,33 @@ void display(void)
     glutSwapBuffers();
 }
 
+void pause()
+{
+    pause_state = !pause_state;
+}
+
 void timer(const int step)
 {
-    for (auto& item : move_queue)
+
+    if (!pause_state)
     {
-        item->move();
+
+        for (auto it = move_queue.begin(); it != move_queue.end();)
+        {
+            auto v = (*it);
+            if (v->deletable)
+            {
+                it = move_queue.erase(it);
+                delete (v);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+        glutPostRedisplay();
+        glutTimerFunc(1000u / ticks_per_sec, timer, step + 1);
     }
-    glutPostRedisplay();
-    glutTimerFunc(1000u / ticks_per_sec, timer, step + 1);
 }
 
 void init_gl(int argc, char** argv, const char* title)
@@ -94,7 +113,6 @@ void init_gl(int argc, char** argv, const char* title)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glShadeModel(GL_FLAT);
-
     glutKeyboardFunc(keyboard);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape_window);

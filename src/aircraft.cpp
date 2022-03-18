@@ -97,6 +97,12 @@ void Aircraft::move()
 
     if (!is_at_terminal)
     {
+
+        if (waypoints.empty())
+        {
+            deletable = true;
+        }
+
         turn_to_waypoint();
         // move in the direction of the current speed
         pos += speed;

@@ -8,7 +8,7 @@ class DynamicObject
 {
 public:
     virtual ~DynamicObject() {}
-
+    bool deletable      = false;
     virtual void move() = 0;
 };
 

@@ -5,28 +5,87 @@
 Compilez et lancez le programme.
 
 Allez dans le fichier `tower_sim.cpp` et recherchez la fonction responsable de gérer les inputs du programme.
+
+    La fonction responsable de gérer les inputs du programme est : TowerSimulation::create_keystrokes() 
+
 Sur quelle touche faut-il appuyer pour ajouter un avion ?
+
+    Pour ajouter un avion il faut cliquer sur `c`
+
 Comment faire pour quitter le programme ?
+
+    Pour quitter le programme, il faut cliquer sur `x` ou `q`
+
 A quoi sert la touche 'F' ?
+
+    La touche `f` sert a mettre le jeu en plein écran. (meme si ca marche sur mon pc, ca affiche un écran blanc)
 
 Ajoutez un avion à la simulation et attendez.
 Que est le comportement de l'avion ?
+
+    L'avion atterit sur l'aéreport en emprintant les routes, se pose sur son emplacement, puis redécolle et fait la meme chose.
+
 Quelles informations s'affichent dans la console ?
+
+    La console nous informe des actions des avions sur l'écran, atterissage, décollage, et service.
 
 Ajoutez maintenant quatre avions d'un coup dans la simulation.
 Que fait chacun des avions ?
+
+    Les 3 premiers avions atterissent sur l'aéroport, le 4 éme attend qu'une place se libère avant d'atterir.
+
 
 ## B- Analyse du code
 
 Listez les classes du programme à la racine du dossier src/.
 Pour chacune d'entre elle, expliquez ce qu'elle représente et son rôle dans le programme.
 
+
+    aircraft : représente un avion, sert à gérer les mouvements et l'affichage de ce dernier.
+    aircraft_types : représente les types avion, permet de définir leur vitesses, leur accélération et le png associé.
+    airport : représente un aéroport, sert à gérer l'affichage de ce dernier.
+    airport_types : représente les types d'aéroport.
+    Point2D : représente les Point 2 dimensions
+    Point3D : représente les Point 3 dimensions
+    runway : Représente la position de la piste d'atterrissage par rapport à l'aéroport
+    terminal : Représente le terminal pour le servicing de l'avion
+    tower : Représente la tour de control de l'aéroport
+    tower_sim : représente la simulation de la tour de controle, sert à gèrer l'interface pour que l'utilisateur controle la tour
+    waypoint : Représente les points de passage
+    WaypointType : Représente les différents types de waypoint il peuvent etre sur le sol, dans un terminal ou dans les airs.
+
 Pour les classes `Tower`, `Aircaft`, `Airport` et `Terminal`, listez leurs fonctions-membre publiques et expliquez précisément à quoi elles servent.
+
+    Tower :
+    - get_instructions : détermine les instrcutions pour l'avion, 
+    - arrived_at_terminal :Indique à la tour que l'avion est arrivé au terminal et commence l'entretient.
+
+    Aircraft :
+    - get_flight_num : renvoie le numéro de vol
+    - distance_to :renvoie la distance entre un avion et un point
+    - display : affiche le sprite de l'avion dans la fenêtre
+    - move : déplace l'avion
+
+    Airport :
+    - get_tower : renvoie la tour de controle de l'avion 
+    - display : affiche l'aéroport de l'avion dans la fenêtre
+    - move : applique la méthode move sur chaque terminal de l'aéroport 
+
+    Terminal :
+    - in_use : renvoie un booléen indiquant si le terminal est actuellement utilisé
+    - is_servicing : renvoie un booléen indiquant si le terminal est en train de faire l'entretient d'un avion
+    - assign_craft : renvoie un avion au terminal
+    - start_service : start l'entretient de l'avion, on assigne une ref à current_aircraft.
+    - finish_service : finish l'entretient de l'avion, on met à null current_aircraft.
+    - move : avance l'entretient de l'avion en incrémentant le compteur service_progress
+
 Réalisez ensuite un schéma présentant comment ces différentes classes intéragissent ensemble.
 
 Quelles classes et fonctions sont impliquées dans la génération du chemin d'un avion ?
 Quel conteneur de la librairie standard a été choisi pour représenter le chemin ?
 Expliquez les intérêts de ce choix.
+
+
 
 ## C- Bidouillons !
 
@@ -34,19 +93,42 @@ Expliquez les intérêts de ce choix.
 Le Concorde est censé pouvoir voler plus vite que les autres avions.
 Modifiez le programme pour tenir compte de cela.
 
+Les vitesses maximales et l'accélération sont déterminées dans le la classe aircraft_types 
+
 2) Identifiez quelle variable contrôle le framerate de la simulation.
 Ajoutez deux nouveaux inputs au programme permettant d'augmenter ou de diminuer cette valeur.
+
+La variable qui controle le framerate est la variable ticks_per_sec initialisé dans opengl_interface.hpp  à DEFAULT_TICKS_PER_SEC dans le fichier config.hpp
+
+
 Essayez maintenant de mettre en pause le programme en manipulant ce framerate. Que se passe-t-il ?\
+
+Si on met le framerate à 0, le jeu crash
+
 Ajoutez une nouvelle fonctionnalité au programme pour mettre le programme en pause, et qui ne passe pas par le framerate.
 
+done !
+
+
 3) Identifiez quelle variable contrôle le temps de débarquement des avions et doublez-le.
+
+    La variable qui controle le temps de débarquement : service_progress
 
 4) Lorsqu'un avion a décollé, il réattérit peu de temps après.
 Faites en sorte qu'à la place, il soit retiré du programme.\
 Indices :\
 A quel endroit pouvez-vous savoir que l'avion doit être supprimé ?\
+
+    On peut savoir si l'avion doit être supprimé dans la fonction finish_service()
+
 Pourquoi n'est-il pas sûr de procéder au retrait de l'avion dans cette fonction ?
+
+    il pas sûr de procéder au retrait de l'avion dans cette fonction car cela peut provoquer des accés illégaux à la mémoire
+
 A quel endroit de la callstack pourriez-vous le faire à la place ?\
+
+    il faut supprimer l'avion de la liste des trucs a afficher & des listes d'avions
+
 Que devez-vous modifier pour transmettre l'information de la première à la seconde fonction ?
 
 5) Lorsqu'un objet de type `Displayable` est créé, il faut ajouter celui-ci manuellement dans la liste des objets à afficher.

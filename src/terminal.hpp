@@ -9,7 +9,7 @@
 class Terminal : public GL::DynamicObject
 {
 private:
-    unsigned int service_progress    = SERVICE_CYCLES;
+    unsigned int service_progress    = SERVICE_CYCLES * 2;
     const Aircraft* current_aircraft = nullptr;
     const Point3D pos;
 

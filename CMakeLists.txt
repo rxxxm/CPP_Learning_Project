@@ -70,6 +70,8 @@ find_package(OpenGL REQUIRED)
 target_include_directories(tower SYSTEM PRIVATE ${OPENGL_INCLUDE_DIR})
 target_link_libraries(tower	PRIVATE ${OPENGL_LIBRARIES})
 
+#target_include_directories(tower SYSTEM PRIVATE /usr/local/include/c++/11.2.0)
+
 
 ## FileSystem
 if((${CMAKE_CXX_COMPILER_ID} MATCHES "GNU") AND (${CMAKE_CXX_COMPILER_VERSION} LESS 9))

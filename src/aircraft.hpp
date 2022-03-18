@@ -62,6 +62,5 @@ public:
 
     void display() const override;
     void move() override;
-
     friend class Tower;
 };
